@@ -1,0 +1,26 @@
+name: Publish editor package
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: editor-package-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: yarn
+          registry-url: 'https://registry.npmjs.org'
+      - name: Check release version
+        run: node -e "if (!/^\d+\.\d+\.\d+$/.test(require('./package.json').version)) throw new Error('Set a stable release version before publishing')"
+      - run: yarn install --frozen-lockfile
+      - run: npm test
+      - name: Publish editor to npmjs
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_SECRET }}

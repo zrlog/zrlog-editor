@@ -27,3 +27,4 @@ tsconfig.tsbuildinfo
 .idea
 dist
 temp
+/.tmp/

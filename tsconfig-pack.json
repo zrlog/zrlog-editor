@@ -28,13 +28,12 @@
   },
   "exclude": [
     "node_modules",
-    "lint-staged.config.js",
-    "tsconfig.tsbuildinfo"
+    "dist"
   ],
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "README.md",
-    "editor-changelog.md"
+    "src/editor/**/*",
+    "src/ai/**/*",
+    "src/markdown/**/*",
+    "src/type.ts"
   ]
 }

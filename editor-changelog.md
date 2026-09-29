@@ -1,5 +1,12 @@
 ### editor 维护记录
 
+### 2.1.33
+
+- Choose a longer fence when inserting code containing backticks.
+- Preserve nested fences, literal math, and URLs inside code during Markdown preprocessing and link previews.
+- Publish `@zrlog/editor` to npmjs with shared runtime peer dependencies and a standalone `markdown` entry.
+- Validate the npm tarball and publish through a manual GitHub Actions workflow.
+
 ### 2.1.32
 
 - Add a standalone Markdown bundle for GraalJS/Polyglot without browser globals.

@@ -4,6 +4,7 @@ import Select from "antd/es/select";
 import { FunctionComponent, useEffect, useState } from "react";
 import { getCodeLanguages } from "../highlight/hljs-helpers";
 import { getEditorRes } from "../lang/editor-lang";
+import { createFencedCodeBlock } from "../../markdown/fenced-code";
 
 type CodeBodyProps = {
     onChange: (content: string) => void;
@@ -27,7 +28,7 @@ const CodeBody: FunctionComponent<CodeBodyProps> = ({ onChange, getContainer }) 
         if (state.code.length === 0) {
             return;
         }
-        onChange("```" + state.language + "\n" + "" + state.code + "\n" + "```\n");
+        onChange(createFencedCodeBlock(state.code, state.language));
     }, [state]);
 
     return (

@@ -1,4 +1,5 @@
 import {markdownToHtml as renderMarkdownToHtml} from "../../markdown";
+import {MarkdownSegment, splitFencedCodeSegments} from "../../markdown/fenced-code";
 
 import flowchart from "flowchart.js";
 
@@ -252,17 +253,15 @@ const withLinkPreviewCards = async (markdownValue: string, options?: MarkdownRen
     if (!apiUrl || !axiosInstance) {
         return markdownValue;
     }
-    const lines = markdownValue.split(/\r?\n/);
+    const lines: MarkdownSegment[] = [];
+    splitFencedCodeSegments(markdownValue).forEach(({value, locked}) => {
+        value.split(/(\n)/).forEach((line) => lines.push({value: line, locked}));
+    });
     const replacements = new Map<number, string>();
-    let fencedCode = false;
     const tasks: Promise<void>[] = [];
-    lines.forEach((line, index) => {
+    lines.forEach(({value: line, locked}, index) => {
         const trimmed = line.trim();
-        if (/^(```|~~~)/.test(trimmed)) {
-            fencedCode = !fencedCode;
-            return;
-        }
-        if (fencedCode || line !== trimmed || !standaloneUrlPattern.test(trimmed) || !isRequestableUrl(trimmed)) {
+        if (locked || line !== trimmed || !standaloneUrlPattern.test(trimmed) || !isRequestableUrl(trimmed)) {
             return;
         }
         const cacheKey = apiUrl + "|" + trimmed;
@@ -289,7 +288,7 @@ const withLinkPreviewCards = async (markdownValue: string, options?: MarkdownRen
     if (replacements.size === 0) {
         return markdownValue;
     }
-    return lines.map((line, index) => replacements.get(index) || line).join("\n");
+    return lines.map(({value}, index) => replacements.get(index) || value).join("");
 };
 
 export const markdownToHtml = async (markdownValue: string, options?: MarkdownRenderOptions) => {

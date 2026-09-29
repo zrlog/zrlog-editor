@@ -5,7 +5,7 @@
 一个支持编辑、预览和扩展集成的 Markdown 编辑器，基于 React + CodeMirror + Marked 构建。
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Node Version](https://img.shields.io/badge/node-%3E%3D18.9.0-brightgreen)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/react-18.3.1-61dafb)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/typescript-5.8.3-blue)](https://www.typescriptlang.org/)
 
@@ -35,7 +35,7 @@
 
 ```
 前端框架：React 18.3.1
-UI 组件：Ant Design 6.0.1
+UI 组件：Ant Design 6.4.3
 编辑器核心：CodeMirror 6
 Markdown 解析：Marked 16.0.0
 数学公式：KaTeX 0.16.22
@@ -49,12 +49,15 @@ Markdown 解析：Marked 16.0.0
 ### NPM 包方式
 
 ```bash
-npm install zrlog-editor
+npm install --save-exact @zrlog/editor@2.1.33 axios@1.12.0
+# 宿主提供以下 peer dependencies；已安装兼容版本时无需重复安装
+npm install react@18.3.1 react-dom@18.3.1 antd@6.4.3 react-router-dom@6.30.3 styled-components@6.1.15
 ```
 
 ```javascript
-import { MarkedEditor } from 'zrlog-editor';
+import { MarkedEditor } from '@zrlog/editor';
 import { useState } from 'react';
+import axios from 'axios';
 
 function App() {
   const [markdown, setMarkdown] = useState('# Hello World');
@@ -62,11 +65,48 @@ function App() {
   return (
     <MarkedEditor
       value={markdown}
+      height="400px"
+      fullscreen={false}
+      previewContent=""
+      config={{
+        dark: false,
+        lang: 'zh_CN',
+        preview: true,
+        uploadConfig: {
+          buildUploadUrl: (type) => `/api/upload?type=${type}`,
+          formName: 'file',
+          axiosInstance: axios,
+        },
+      }}
       onChange={({ value }) => setMarkdown(value)}
     />
   );
 }
 ```
+
+React、React DOM、Ant Design、React Router DOM 和 styled-components 使用宿主的 peer dependencies。
+编辑器入口提供 ES module，供 Webpack / Vite 等浏览器构建工具使用；演示站的 Craco / CRA 不会作为运行时依赖安装。
+上传接口由宿主实现，使用 AI 配置链接时需位于宿主的 Router 内。
+
+后台现有 `@editor/dist/...` 导入可以通过 npm alias 迁移，发布后执行：
+
+```bash
+yarn add --exact @editor@npm:@zrlog/editor@2.1.33
+```
+
+提交更新后的 `package.json` 和 `yarn.lock`，正式依赖使用 npmjs 固定版本。包内保留 `dist/editor`、`dist/ai` 和 `dist/type` 路径。
+
+### 开发与发布
+
+```bash
+yarn install --frozen-lockfile
+npm test
+npm run pack
+```
+
+tarball 输出到 `.tmp/packages/`。发布沿用 frontend-common 的手动 workflow：配置仓库 Secret
+`NPM_PUBLISH_SECRET`，运行 **Publish editor package**，使用标准 `npm publish --access public` 发布到 npmjs。
+版本管理、首次配置与消费者升级见 [发布流程](docs/releasing.md)。
 
 ### 独立 Markdown 渲染 bundle
 
@@ -76,11 +116,10 @@ yarn build:markdown
 
 产物为 `dist/markdown/zrlog-markdown.umd.js`，同时生成 TypeScript 类型声明。
 bundle 内置 Marked、Highlight.js 和 KaTeX，无需额外 JS 依赖。
-`yarn build` 和 `shell/version.sh` 的发布打包流程也会构建此产物。
+`yarn build`、`npm pack` 和 `npm publish` 也会构建此产物。
 
-发布新版本时，`shell/version.sh` 会将同一次构建的压缩 bundle 单独保存到
-`artifacts/zrlog-markdown-v<版本号>.min.js`，与 `artifacts/v<版本号>.tgz` 一起提交并通过现有
-CDN 同步流程上传。例如发布 `2.1.32` 时，对应文件为 `artifacts/zrlog-markdown-v2.1.32.min.js`。
+bundle 随 `@zrlog/editor` 一起发布到 npmjs。Java / Polyglot 消费者可以从 npm tarball 中提取
+`package/dist/markdown/zrlog-markdown.umd.js`；旧 `artifacts/` 文件保留供历史版本使用，新版不再提交 tarball 或同步到对象存储。
 
 在 GraalJS / Polyglot 中加载后，通过全局对象同步调用：
 
@@ -91,9 +130,12 @@ ZrLogMarkdown.markdownToHtml('# Hello\n\n$x^2$');
 在 Node.js 中也可以直接加载同一个文件：
 
 ```javascript
-const {markdownToHtml} = require('./dist/markdown/zrlog-markdown.umd.js');
+const {markdownToHtml} = require('@zrlog/editor/markdown');
 const html = markdownToHtml('```javascript\nconst x = 1;\n```');
 ```
+
+ES module 消费者也可使用 `import {markdownToHtml} from '@zrlog/editor/markdown'`。此入口自带类型声明，
+只加载独立渲染 bundle，不加载编辑器或 React。
 
 接口为 `markdownToHtml(markdown, options?): string`。`null`、`undefined` 和空字符串返回空字符串，
 渲染不需要 `document`、`window`、Node.js 全局变量、定时器或网络访问。

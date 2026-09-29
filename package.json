@@ -1,29 +1,40 @@
 {
-  "name": "editor",
-  "version": "2.1.33-SNAPSHOT",
+  "name": "@zrlog/editor",
+  "version": "2.1.33",
+  "description": "ZrLog Markdown editor for React with a standalone Markdown renderer",
   "homepage": "./",
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zrlog/zrlog-editor.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "yarn@1.22.22",
   "dependencies": {
-    "@ant-design/cssinjs": "2.1.2",
     "@ant-design/icons": "6.2.3",
     "@codemirror/lang-markdown": "6.3.3",
     "@codemirror/lang-yaml": "6.1.2",
     "@codemirror/language-data": "6.5.1",
-    "@craco/craco": "7.1.0",
     "@uiw/react-codemirror": "4.24.1",
-    "antd": "6.4.3",
     "axios": "1.12.0",
     "flowchart.js": "1.18.0",
     "highlight.js": "11.11.1",
     "katex": "0.16.22",
     "marked": "16.0.0",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-router": "6.30.3",
-    "react-router-dom": "6.30.3",
-    "react-sequence-diagram": "0.0.12",
-    "screenfull": "6.0.2",
-    "styled-components": "6.1.15"
+    "react-sequence-diagram": "0.0.12"
+  },
+  "peerDependencies": {
+    "antd": "6.4.x",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.1.15"
   },
   "resolutions": {
     "@rc-component/util": "1.11.1"
@@ -32,16 +43,22 @@
     "lint": "yarn type-check",
     "start": "export PORT=3030 && craco start",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
-    "build": "tsc && npm run build:markdown",
+    "clean": "node -e \"require('node:fs').rmSync('dist', {recursive: true, force: true})\"",
+    "build": "npm run clean && tsc --project tsconfig-pack.json && npm run build:markdown",
     "build:markdown": "tsc --project tsconfig-markdown.json && node shell/build-markdown.cjs",
     "test:markdown": "npm run build:markdown && node --test tests/markdown.test.cjs",
     "pages": "craco build",
-    "test": "craco test"
+    "test": "npm run type-check && npm run build && node --test tests/*.test.cjs",
+    "pack": "mkdir -p .tmp/packages && npm pack --ignore-scripts --pack-destination .tmp/packages",
+    "prepack": "npm run build",
+    "version": "node shell/sync-version.cjs"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "devDependencies": {
+    "@ant-design/cssinjs": "2.1.2",
+    "@craco/craco": "7.1.0",
     "@types/katex": "0.16.7",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
@@ -52,9 +69,14 @@
     "husky": "7.0.4",
     "jsdom": "16.7.0",
     "lint-staged": "11.1.2",
-    "node": "18.9.0",
+    "antd": "6.4.3",
     "prettier": "2.3.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router": "6.30.3",
+    "react-router-dom": "6.30.3",
     "react-scripts": "5.0.1",
+    "styled-components": "6.1.15",
     "typescript": "5.8.3",
     "webpack": "5.100.2"
   },
@@ -80,9 +102,24 @@
   "files": [
     "dist",
     "README.md",
+    "LICENSE",
     "package.json",
-    "editor-changelog.md"
+    "editor-changelog.md",
+    "markdown.js",
+    "markdown.d.ts"
   ],
-  "main": "dist/editor/marked-editor",
-  "types": "dist/editor/marked-editor.d.ts"
+  "main": "dist/editor/marked-editor.js",
+  "module": "dist/editor/marked-editor.js",
+  "types": "dist/editor/marked-editor.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/editor/marked-editor.d.ts",
+      "default": "./dist/editor/marked-editor.js"
+    },
+    "./markdown": {
+      "types": "./markdown.d.ts",
+      "default": "./markdown.js"
+    },
+    "./*": "./*"
+  }
 }

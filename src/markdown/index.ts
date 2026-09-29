@@ -1,6 +1,7 @@
 import {Marked} from "marked";
 import katex from "katex";
 import {createCodeRenderer, DiagramMode} from "./code-renderer";
+import {splitFencedCodeSegments} from "./fenced-code";
 
 export type MarkdownRenderOptions = {
     /** Keep diagram source as code by default; browser adapters can request placeholders. */
@@ -11,18 +12,12 @@ export type MarkdownRenderOptions = {
 const codeParser = new Marked({gfm: true, breaks: true, async: false, renderer: createCodeRenderer("code")});
 const placeholderParser = new Marked({gfm: true, breaks: true, async: false, renderer: createCodeRenderer("placeholder")});
 
-type MarkdownSegment = {
-    value: string;
-    locked: boolean;
-};
-
 type MarkdownMathToken = {
     placeholder: string;
     expression: string;
     displayMode: boolean;
 };
 
-const fencedCodeLinePattern = /^(```|~~~)/;
 const inlineCodePattern = /(`+)([\s\S]*?)\1/g;
 const texBlockPattern = /\$\$([\s\S]+?)\$\$/g;
 const texInlinePattern = /(?<!\$)\$(.+?)\$(?!\$)/g;
@@ -33,46 +28,6 @@ const escapeRegexCharClass = (value: string) => value.replace(/[\\\]\-^]/g, "\\$
 const cjkStrongBoundaryPunctuationClass = escapeRegexCharClass("'\"\u201c\u201d\u2018\u2019\u300c\u300d\u300e\u300f\uff08\uff09()\u300a\u300b\u3008\u3009\u3010\u3011[]{}\uff0c\u3002\uff01\uff1f\uff1b\uff1a\u3001,.!?;:");
 const cjkStrongOpenBoundaryPattern = new RegExp(`([${cjkCharRange}])\\*\\*(?=[${cjkStrongBoundaryPunctuationClass}])`, "g");
 const cjkStrongCloseBoundaryPattern = new RegExp(`([${cjkStrongBoundaryPunctuationClass}])\\*\\*(?=[${cjkCharRange}])`, "g");
-
-const splitFencedCodeSegments = (markdownValue: string) => {
-    const parts = markdownValue.split(/(\r?\n)/);
-    const segments: MarkdownSegment[] = [];
-    let buffer = "";
-    let activeFence = "";
-    let locked = false;
-
-    const flush = () => {
-        if (buffer) {
-            segments.push({value: buffer, locked});
-            buffer = "";
-        }
-    };
-
-    parts.forEach((part) => {
-        if (/^\r?\n$/.test(part)) {
-            buffer += part;
-            return;
-        }
-        const fenceMatch = part.trim().match(fencedCodeLinePattern);
-        if (fenceMatch && (!activeFence || fenceMatch[1] === activeFence)) {
-            if (!activeFence) {
-                flush();
-                activeFence = fenceMatch[1];
-                locked = true;
-                buffer = part;
-                return;
-            }
-            buffer += part;
-            flush();
-            activeFence = "";
-            locked = false;
-            return;
-        }
-        buffer += part;
-    });
-    flush();
-    return segments;
-};
 
 const transformOutsideInlineCode = (markdownValue: string, transform: (value: string) => string) => {
     let output = "";
