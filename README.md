@@ -49,7 +49,7 @@ Markdown 解析：Marked 16.0.0
 ### NPM 包方式
 
 ```bash
-npm install --save-exact @zrlog/editor@2.1.33 axios@1.12.0
+npm install --save-exact @zrlog/editor@2.2.0 axios@1.12.0
 # 宿主提供以下 peer dependencies；已安装兼容版本时无需重复安装
 npm install react@18.3.1 react-dom@18.3.1 antd@6.4.3 react-router-dom@6.30.3 styled-components@6.1.15
 ```
@@ -95,6 +95,14 @@ yarn add --exact @editor@npm:@zrlog/editor@2.1.33
 ```
 
 提交更新后的 `package.json` 和 `yarn.lock`，正式依赖使用 npmjs 固定版本。包内保留 `dist/editor`、`dist/ai` 和 `dist/type` 路径。
+
+### 宿主主题图标
+
+2.2.0 新增 `EditorIconProvider` 和 `@zrlog/editor/core`：宿主按语义插槽注入图标，
+支持选中态、尺寸、颜色、旋转动画和独立 AI 品牌配置。编辑器不依赖 frontend-common。
+旧入口保留默认图形；需要排除默认图标资源时使用 core 入口，并逐个导入宿主需要的图标。
+完整插槽表、嵌套覆盖、预览与 AI 接入示例见 [图标接口](docs/theme-icons.md)。
+消费者须等待 npm 发布成功后，再升级固定版本与锁文件。
 
 ### 开发与发布
 

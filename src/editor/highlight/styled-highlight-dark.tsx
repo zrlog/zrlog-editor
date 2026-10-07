@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
-export const StyledHighlightDark = styled("div")`
+export const highlightDark = css`
     pre code.hljs {
         display: block;
         overflow-x: auto;
@@ -119,3 +119,5 @@ export const StyledHighlightDark = styled("div")`
         /* purposely ignored */
     }
 `;
+
+export const StyledHighlightDark = styled.div`${highlightDark}`;

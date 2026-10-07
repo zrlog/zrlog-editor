@@ -1,6 +1,6 @@
 {
   "name": "@zrlog/editor",
-  "version": "2.1.33",
+  "version": "2.2.0",
   "description": "ZrLog Markdown editor for React with a standalone Markdown renderer",
   "homepage": "./",
   "license": "Apache-2.0",
@@ -44,7 +44,7 @@
     "start": "export PORT=3030 && craco start",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "clean": "node -e \"require('node:fs').rmSync('dist', {recursive: true, force: true})\"",
-    "build": "npm run clean && tsc --project tsconfig-pack.json && npm run build:markdown",
+    "build": "npm run clean && tsc --project tsconfig-pack.json && npm run build:markdown && node shell/build-entries.cjs",
     "build:markdown": "tsc --project tsconfig-markdown.json && node shell/build-markdown.cjs",
     "test:markdown": "npm run build:markdown && node --test tests/markdown.test.cjs",
     "pages": "craco build",
@@ -106,7 +106,15 @@
     "package.json",
     "editor-changelog.md",
     "markdown.js",
-    "markdown.d.ts"
+    "markdown.d.ts",
+    "icons.js",
+    "icons.d.ts",
+    "core.js",
+    "core.d.ts",
+    "core",
+    "brands",
+    "default-icons",
+    "docs/theme-icons.md"
   ],
   "main": "dist/editor/marked-editor.js",
   "module": "dist/editor/marked-editor.js",
@@ -120,6 +128,36 @@
       "types": "./markdown.d.ts",
       "default": "./markdown.js"
     },
-    "./*": "./*"
+    "./*": "./*",
+    "./icons": {
+      "types": "./dist/icons.d.ts",
+      "import": "./dist/icons.js",
+      "require": "./dist/cjs/icons.js",
+      "default": "./dist/icons.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js",
+      "require": "./dist/cjs/core/index.js",
+      "default": "./dist/core/index.js"
+    },
+    "./core/*": {
+      "types": "./dist/core/*.d.ts",
+      "import": "./dist/core/*.js",
+      "require": "./dist/cjs/core/*.js",
+      "default": "./dist/core/*.js"
+    },
+    "./brands/*": {
+      "types": "./dist/brands/*.d.ts",
+      "import": "./dist/brands/*.js",
+      "require": "./dist/cjs/brands/*.js",
+      "default": "./dist/brands/*.js"
+    },
+    "./default-icons/*": {
+      "types": "./dist/default-icons/*.d.ts",
+      "import": "./dist/default-icons/*.js",
+      "require": "./dist/cjs/default-icons/*.js",
+      "default": "./dist/default-icons/*.js"
+    }
   }
 }

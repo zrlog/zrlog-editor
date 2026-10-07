@@ -28,3 +28,12 @@ tsconfig.tsbuildinfo
 dist
 temp
 /.tmp/
+
+# Generated package entry shims
+/core/
+/brands/
+/default-icons/
+/core.js
+/core.d.ts
+/icons.js
+/icons.d.ts

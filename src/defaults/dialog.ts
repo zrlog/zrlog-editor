@@ -1,0 +1,12 @@
+import loading from "../default-icons/loading";
+import error from "../default-icons/error";
+import close from "../default-icons/close";
+import up from "../default-icons/up";
+import down from "../default-icons/down";
+import clear from "../default-icons/clear";
+import check from "../default-icons/check";
+import copy from "../default-icons/copy";
+import alignLeft from "../default-icons/alignLeft";
+import alignCenter from "../default-icons/alignCenter";
+import alignRight from "../default-icons/alignRight";
+export default { loading, error, close, up, down, clear, check, copy, alignLeft, alignCenter, alignRight };

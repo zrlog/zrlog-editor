@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
-export const StyledHighlightDefault = styled("div")`
+export const highlightDefault = css`
     /*!
   Theme: Default
   Description: Original highlight.js style
@@ -134,3 +134,5 @@ Typically this "required" baseline CSS is added by \`makestuff.js\` during build
         font-weight: bold;
     }
 `;
+
+export const StyledHighlightDefault = styled.div`${highlightDefault}`;

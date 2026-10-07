@@ -1,5 +1,12 @@
 ### editor 维护记录
 
+### 2.2.0
+
+- Add semantic icon and AI brand providers, per-icon defaults and core entry points without editor fallback assets.
+- Cover editor/selection toolbars, dialogs, AI controls, feedback, and code-copy actions; forward selected state and host styling.
+- Keep preview copy actions in the host React tree with portals; preserve content and copy state on light/dark changes.
+- Preserve existing component imports and default graphics. Validate real tarball consumers and core icon isolation.
+
 ### 2.1.33
 
 - Choose a longer fence when inserting code containing backticks.

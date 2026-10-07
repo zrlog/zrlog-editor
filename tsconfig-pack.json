@@ -34,6 +34,12 @@
     "src/editor/**/*",
     "src/ai/**/*",
     "src/markdown/**/*",
-    "src/type.ts"
+    "src/type.ts",
+    "src/core/**/*",
+    "src/icons/**/*",
+    "src/icons.ts",
+    "src/defaults/**/*",
+    "src/default-icons/**/*",
+    "src/brands/**/*"
   ]
 }

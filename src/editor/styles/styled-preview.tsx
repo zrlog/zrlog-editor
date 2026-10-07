@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import { CSSProperties, forwardRef, PropsWithChildren } from "react";
 import {getTextColor} from "../editor-helpers";
 
@@ -294,8 +294,7 @@ const lightCss = `
     }
 `;
 
-const DarkStylePreview = styled(`div`)`
-    ${lightCss}
+const darkCss = css`
     .markdown-body table th {
         border: 1px solid rgba(198, 198, 198, 0.5);
     }
@@ -318,8 +317,9 @@ const DarkStylePreview = styled(`div`)`
     }
 `;
 
-const LightStyledPreview = styled(`div`)`
+const PreviewSurface = styled.div<{$dark: boolean}>`
     ${lightCss}
+    ${({$dark}) => $dark && darkCss}
 `;
 
 type StyledPreviewProps = PropsWithChildren & {
@@ -328,7 +328,6 @@ type StyledPreviewProps = PropsWithChildren & {
 };
 
 const StyledPreview = forwardRef<HTMLDivElement, StyledPreviewProps>(({ dark, style, children, ...rest }, ref) => {
-    const Comp = dark ? DarkStylePreview : LightStyledPreview;
     const darkStyle = dark
         ? {
               color: getTextColor(dark),
@@ -336,9 +335,9 @@ const StyledPreview = forwardRef<HTMLDivElement, StyledPreviewProps>(({ dark, st
         : {};
 
     return (
-        <Comp ref={ref} style={{...darkStyle, ...style}} {...rest}>
+        <PreviewSurface $dark={dark} ref={ref} style={{...darkStyle, ...style}} {...rest}>
             {children}
-        </Comp>
+        </PreviewSurface>
     );
 });
 

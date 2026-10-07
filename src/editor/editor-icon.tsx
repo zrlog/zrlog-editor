@@ -20,7 +20,7 @@ const EditorIcon: FunctionComponent<EditorIconProps> = ({onClick, title, childre
                 fontSize: 20,
                 border: "none",
                 height: 38,
-                color: "rgb(119,119,119)",
+                color: "inherit",
                 borderRadius: 0,
                 padding: 0,
                 justifyContent: "center",
