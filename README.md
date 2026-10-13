@@ -49,7 +49,7 @@ Markdown 解析：Marked 16.0.0
 ### NPM 包方式
 
 ```bash
-npm install --save-exact @zrlog/editor@2.2.0 axios@1.12.0
+npm install --save-exact @zrlog/editor@2.2.1 axios@1.12.0
 # 宿主提供以下 peer dependencies；已安装兼容版本时无需重复安装
 npm install react@18.3.1 react-dom@18.3.1 antd@6.4.3 react-router-dom@6.30.3 styled-components@6.1.15
 ```

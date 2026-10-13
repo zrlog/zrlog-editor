@@ -1,6 +1,6 @@
 {
   "name": "@zrlog/editor",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "ZrLog Markdown editor for React with a standalone Markdown renderer",
   "homepage": "./",
   "license": "Apache-2.0",

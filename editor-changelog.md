@@ -1,5 +1,9 @@
 ### editor 维护记录
 
+### 2.2.1
+
+- Match the split preview background to the editing area in light and dark modes, including themes with tinted container backgrounds.
+
 ### 2.2.0
 
 - Add semantic icon and AI brand providers, per-icon defaults and core entry points without editor fallback assets.

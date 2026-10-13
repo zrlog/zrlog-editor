@@ -3,6 +3,7 @@ import CodeMirror, {EditorSelection, EditorState, EditorView, ViewUpdate} from "
 import {FunctionComponent, useCallback, useMemo, useRef, useState} from "react";
 import {ZrLogEditorProps} from "../../editor/editor.types";
 import {StyledEditor} from "../../editor/styles/styled-editor";
+import {getBgColor} from "../../editor/editor-helpers";
 import EditorToolBar from "./editor-tool-bar";
 import {languages} from "@codemirror/language-data";
 import {markdown} from "@codemirror/lang-markdown";
@@ -365,6 +366,8 @@ const Editor: FunctionComponent<ZrLogEditorProps> = ({
                             dark={config.dark}
                             previewRef={previewRef}
                             style={{
+                                // Match CodeMirror's white light theme and the editor's dark background.
+                                backgroundColor: config.dark ? getBgColor(true) : "#fff",
                                 display: state.preview ? "block" : "none",
                                 minWidth: `calc((100% - ${guttersWidth}px) / 2)`,
                                 width: `calc((100% - ${guttersWidth}px) / 2)`,
