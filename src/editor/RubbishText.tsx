@@ -21,8 +21,8 @@ const RubbishText: FunctionComponent<RubbishTextProps> = ({ offline, rubbish, la
         if (lastUpdateDate && lastUpdateDate > 0) {
             tips = (
                 <>
+                    <span>{getEditorRes("update")}&nbsp;</span>
                     <TimeAgo timestamp={lastUpdateDate} />
-                    <span>{getEditorRes("update")}</span>
                 </>
             );
         } else {
